@@ -32,11 +32,6 @@ asyncio_mode = "auto"
 filterwarnings = [
   "ignore::DeprecationWarning",
 ]
-markers = [
-  "",
-  "",
-  "",
-]
 
 [tool.ruff]
 ignore = []
