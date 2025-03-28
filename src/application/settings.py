@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field
+from pydantic import Field, PostgresDsn
 
 
 class Base(BaseSettings):
@@ -21,7 +21,11 @@ class Base(BaseSettings):
     # TODO если будет селери то добавить его
 
     # DataBase
-    # TODO тут по бд добавить
+    DB_HOST: str
+    DB_PORT: str
+    DB_USER: str
+    DB_PASSWORD: str
+    DB_NAME: str
 
     # Redis
     REDIS_HOST: str
@@ -29,6 +33,22 @@ class Base(BaseSettings):
     REDIS_DB_NUMBER: int
 
     # TODO ДОДЕЛАТЬ ВСЕ property
+    @property
+    def DATABASE_ASYNC_URL(self) -> str:
+        return str(
+            PostgresDsn.build(
+                scheme="postgresql+asyncpg",
+                username=self.DB_USER,
+                password=self.DB_PASSWORD,
+                host=self.DB_HOST,
+                port=int(self.DB_PORT),  # Явное преобразование строки в число
+                path=self.DB_NAME,
+            )
+        )
+
+    # @property
+    # def DATABASE_ASYNC_URL(self):
+    #     return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     @property
     def BASE_DIR(self) -> Path:

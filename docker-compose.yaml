@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: local_postgres_tokens  # Приводим в соответствие с вашей командой
+    image: postgres:14.3
+    restart: unless-stopped
+    ports:
+      - "5432:5432"  # Стандартный порт
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: local_user
+      POSTGRES_PASSWORD: new_password_123
+      POSTGRES_DB: local_token_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U local_user -d local_token_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
