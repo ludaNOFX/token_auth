@@ -55,11 +55,6 @@ def _set_lvl_loggers(level: int, *names: str) -> None:
 
 def logging_setup(settings: Base) -> None:
     """Настройка логгирования для сервиса"""
-    log_dir_path = settings.BASE_DIR.joinpath(settings.LOG_DIR)
-
-    if not log_dir_path.exists():
-        os.mkdir(log_dir_path)
-
     format_date = "%d-%m-%Y %H:%M:%S"
     format_ctx_extended = "%(asctime)s - [%(levelname)s] - [%(extra_message)s] - %(name)s(%(lineno)d): %(message)s"  # noqa: E501
 
@@ -67,19 +62,30 @@ def logging_setup(settings: Base) -> None:
     console_handler.setLevel(logging.DEBUG)
     console_handler.addFilter(ExtraCtxFilter())
 
-    log_file_path = Path(os.path.join(log_dir_path, "application.log"))
-    file_handler = logging.handlers.WatchedFileHandler(
-        filename=log_file_path,
-        encoding="utf-8",
-    )
-    file_handler.addFilter(ExtraCtxFilter())
+    handlers = [
+        console_handler,
+    ]
+
+    # Только для local — добавляем логирование в файл
+    if settings.PROJ_ENV == "local":
+        log_dir_path = settings.BASE_DIR.joinpath(settings.LOG_DIR)
+        os.makedirs(log_dir_path, exist_ok=True)
+
+        log_file_path = Path(os.path.join(log_dir_path, "application.log"))
+        file_handler = logging.handlers.WatchedFileHandler(
+            filename=log_file_path,
+            encoding="utf-8",
+        )
+        file_handler.addFilter(ExtraCtxFilter())
+        handlers.append(file_handler)
 
     logging.basicConfig(
         format=format_ctx_extended,
         datefmt=format_date,
         level=logging.DEBUG,
-        handlers=[console_handler, file_handler],
+        handlers=handlers,
     )
+
     info_level_loggers = [
         "faker.factory",
         "asyncio",
