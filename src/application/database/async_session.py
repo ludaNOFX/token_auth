@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
 )
 
-from src.core.interface.session import ISessionAsyncFactory, ISessionAsyncWrapper
+from src.core.common.interface.session import ISessionAsyncFactory, ISessionAsyncWrapper
 
 
 def _create_engine(url: str, echo: bool = False) -> AsyncEngine:
