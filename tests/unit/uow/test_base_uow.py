@@ -2,9 +2,9 @@ from unittest.mock import MagicMock
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.common.exceptions import UoWError
-from src.core.common.interface.session import ISessionAsyncWrapper
-from src.core.common.interface.uow.base_uow import ISQLAlchemyUoWAsyncBase
+from core.exceptions.exceptions import UoWError
+from src.core.interface.session import ISessionAsyncWrapper
+from src.core.interface.uow.base_uow import ISQLAlchemyUoWAsyncBase
 
 
 pytestmark = pytest.mark.uow

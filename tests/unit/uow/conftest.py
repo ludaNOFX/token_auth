@@ -1,10 +1,11 @@
+from collections.abc import Generator
 from unittest.mock import MagicMock, create_autospec
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from src.core.common.interface.uow.base_uow import ISQLAlchemyUoWAsyncBase
+from src.core.interface.uow.base_uow import ISQLAlchemyUoWAsyncBase
 from src.data.uow.base_uow_impl import SQLAlchemyUoWAsyncBase
-from src.core.common.interface.session import ISessionAsyncFactory, ISessionAsyncWrapper
+from src.core.interface.session import ISessionAsyncFactory, ISessionAsyncWrapper
 
 
 @pytest.fixture(scope="function")
@@ -29,6 +30,8 @@ def mock_async_session_wrapper(mock_async_session) -> ISessionAsyncWrapper:
 
 
 @pytest.fixture(scope="function")
-def uow(mock_async_session_wrapper: ISessionAsyncWrapper) -> ISQLAlchemyUoWAsyncBase:
+def uow(
+    mock_async_session_wrapper: ISessionAsyncWrapper,
+) -> Generator[ISQLAlchemyUoWAsyncBase]:
     """Создаем UoW с мокнутым async_session_wrapper"""
-    return SQLAlchemyUoWAsyncBase(mock_async_session_wrapper)
+    yield SQLAlchemyUoWAsyncBase(mock_async_session_wrapper)
