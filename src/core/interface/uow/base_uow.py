@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing_extensions import Self
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.common.interface.session import ISessionAsyncWrapper
+from src.core.interface.session import ISessionAsyncWrapper
 
 
 class ISQLAlchemyUoWAsyncBase(ABC):
