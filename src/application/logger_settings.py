@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 from src.application.settings import Base
-from src.application.shared.logutils import CtxVarEnum
+from src.shared.logutils import CtxVarEnum
 
 
 class CustomLogRecord(logging.LogRecord):

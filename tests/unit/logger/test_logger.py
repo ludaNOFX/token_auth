@@ -1,5 +1,5 @@
 import logging
-from src.application.shared.logutils import CtxVarEnum, set_logging_var
+from src.shared.logutils import CtxVarEnum, set_logging_var
 from src.application.logger_settings import CustomLogRecord, ExtraCtxFilter
 
 

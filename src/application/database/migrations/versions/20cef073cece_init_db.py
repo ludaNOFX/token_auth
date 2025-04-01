@@ -1,20 +1,21 @@
-"""Initial tables
+"""init db
 
-Revision ID: 99acedd611da
-Revises:
-Create Date: 2025-03-28 14:39:44.611622
+Revision ID: 20cef073cece
+Revises: 21ba08c4b70b
+Create Date: 2025-04-01 10:53:25.320605
 
 """
 
 from collections.abc import Sequence
-
 from alembic import op
 import sqlalchemy as sa
 
+from src.application.database.migrations.const.enum import RoleEnumType
+
 
 # revision identifiers, used by Alembic.
-revision: str = "99acedd611da"
-down_revision: str | None = None
+revision: str = "20cef073cece"
+down_revision: str | None = "21ba08c4b70b"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
@@ -25,13 +26,13 @@ def upgrade() -> None:
     op.create_table(
         "roles",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("name", sa.String(), nullable=False),
+        sa.Column("name", RoleEnumType, nullable=False, unique=True),
         sa.Column(
             "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
-        ),
+        ),  # noqa: E501
         sa.Column(
             "updated_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
-        ),
+        ),  # noqa: E501
         sa.PrimaryKeyConstraint("id", name=op.f("pk_roles")),
         sa.UniqueConstraint("name", name=op.f("uq_roles_name")),
     )
@@ -39,19 +40,20 @@ def upgrade() -> None:
         "users",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("login", sa.String(), nullable=False),
+        sa.Column("password", sa.String(length=255), nullable=False),
         sa.Column("first_name", sa.String(), nullable=True),
         sa.Column("second_name", sa.String(), nullable=True),
         sa.Column("description", sa.String(), nullable=True),
         sa.Column("role_id", sa.Integer(), nullable=True),
         sa.Column(
             "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
-        ),
+        ),  # noqa: E501
         sa.Column(
             "updated_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
-        ),
+        ),  # noqa: E501
         sa.ForeignKeyConstraint(
             ["role_id"], ["roles.id"], name=op.f("fk_users_role_id"), ondelete="SET NULL"
-        ),
+        ),  # noqa: E501
         sa.PrimaryKeyConstraint("id", name=op.f("pk_users")),
         sa.UniqueConstraint("login", name=op.f("uq_users_login")),
     )

@@ -1,9 +1,9 @@
 from typing_extensions import Self
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.common.exceptions import UoWError
-from src.core.common.interface.session import ISessionAsyncWrapper
-from src.core.common.interface.uow.base_uow import ISQLAlchemyUoWAsyncBase
+from src.core.exceptions.exceptions import UoWError
+from src.core.interface.session import ISessionAsyncWrapper
+from src.core.interface.uow.base_uow import ISQLAlchemyUoWAsyncBase
 
 
 class SQLAlchemyUoWAsyncBase(ISQLAlchemyUoWAsyncBase):
