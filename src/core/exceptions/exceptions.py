@@ -27,3 +27,7 @@ class UsecaseError(BaseError):
 
 class HasherError(BaseError):
     """Ошибка Hasher"""
+
+
+class ServiceError(BaseError):
+    """Ошибка Сервиса"""

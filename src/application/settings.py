@@ -1,7 +1,8 @@
+from collections.abc import Sequence
 import os
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field, PostgresDsn
+from pydantic import Field, PostgresDsn, RedisDsn
 
 
 class Base(BaseSettings):
@@ -15,7 +16,15 @@ class Base(BaseSettings):
     LOG_DIR: str = "logs"
 
     # CORS
-    # TODO сделать мидлваре и корс
+    CORS_ORIGINS: Sequence[str] = ("*",)
+    CORS_CREDENTIALS: bool = True
+    CORS_ALLOW_METHODS: Sequence[str] = ("GET", "POST", "PATCH", "DELETE", "OPTIONS")
+    CORS_ALLOW_HEADERS: Sequence[str] = ("Content-Type", "remote_user")
+    CORS_MAX_AGE: int = 3600
+
+    # JWT
+    JWT_SECRET_KEY: str = "lol"
+    JWT_ALGORITHM: str = "HS256"
 
     # Celery
     # TODO если будет селери то добавить его
@@ -43,6 +52,17 @@ class Base(BaseSettings):
                 host=self.DB_HOST,
                 port=int(self.DB_PORT),  # Явное преобразование строки в число
                 path=self.DB_NAME,
+            )
+        )
+
+    @property
+    def REDIS_URL(self):
+        return str(
+            RedisDsn.build(
+                scheme="redis",  # протокол (может быть "rediss" для SSL)
+                host=self.REDIS_HOST,
+                port=self.REDIS_PORT,
+                path=f"/{self.REDIS_DB_NUMBER}",  # номер базы как путь
             )
         )
 

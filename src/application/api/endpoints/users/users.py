@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 
+from src.core.usecases import get_user_usecase
 from src.core.usecases import get_many_user_usecase
 from src.core.interface.password_hasher import IPasswordHasher
 from src.application.depends.provider import get_password_hasher, get_uow_sql
@@ -57,4 +58,23 @@ async def get_many_users(uow_sql: IUowSQL = Depends(get_uow_sql)):
         raise HTTPException(
             status_code=500,
             detail="Internal Error",
+        ) from e
+
+
+@router.get(
+    "/users/{user_id}",
+    responses={
+        200: {"model": UserSchema},
+    },
+)
+async def get_user(user_id: int, uow_sql: IUowSQL = Depends(get_uow_sql)):
+    try:
+        uc = get_user_usecase.Usecase(uow_sql=uow_sql)
+        res = await uc(user_id=user_id)
+        response_schema = UserSchema(**res.to_dict())
+        return response_schema
+    except Exception as e:
+        raise HTTPException(
+            status_code=404,
+            detail="Not Found",
         ) from e

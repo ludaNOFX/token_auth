@@ -9,7 +9,7 @@ from src.application.database.async_session import (
     _create_engine,
 )
 from src.application.settings import settings
-from src.infra.password_hasher import PasswordHasher
+from src.infra.password_hasher_impl import PasswordHasher
 
 engine = _create_engine(settings.DATABASE_ASYNC_URL)
 session_factory = SessionAsyncFactory(engine=engine)
